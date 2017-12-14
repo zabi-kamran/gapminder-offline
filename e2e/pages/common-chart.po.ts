@@ -3,7 +3,7 @@ import { $, $$, browser, ElementArrayFinder, ElementFinder, ExpectedConditions a
 import { waitForPageLoaded, waitForSliderToBeReady, waitForSpinner } from '../helpers/helper';
 import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../helpers/ExtendedElementFinder';
 import { promise } from 'selenium-webdriver';
-import { waitUntil } from '../helpers/waitHelper';
+import { waitStaleness, waitUntil } from '../helpers/waitHelper';
 
 export class CommonChartPage {
   static countries = {
@@ -108,8 +108,9 @@ export class CommonChartPage {
     return newOptionValue;
   }
 
-  closeTab() {
-    return _$$('.glyphicon-remove-circle').last().safeClick();
+  async closeTab(): Promise<void> {
+    await waitStaleness($('.modal-backdrop.fade'));
+    await _$$('.glyphicon-remove-circle').last().safeClick();
   }
 
 }

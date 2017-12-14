@@ -1,73 +1,46 @@
-import { $, ElementFinder } from 'protractor';
 import { _$, _$$, ExtendedElementFinder } from '../../helpers/ExtendedElementFinder';
-import { waitForPageLoaded, waitForSpinner, waitForUrlToChange } from '../../helpers/helper';
-import { waitUntil } from '../../helpers/waitHelper';
+import { $$, By, element, ElementFinder } from 'protractor';
+import { waitForSpinner } from '../../helpers/helper';
 
 export class Header {
-  rootSelector: ElementFinder = $('.header');
-  /**
-   * Social buttons
-   */
-  // desktop
-  socialDesktop: ExtendedElementFinder = _$('.social.desktop');
-  mailButtonDesktop: ExtendedElementFinder = this.socialDesktop._$$('.mail.button').first();
-  mailLinkDesktop: ExtendedElementFinder = this.socialDesktop._$$('app-social-buttons > a').first();
-  twitterSocialDesktop: ExtendedElementFinder = this.socialDesktop._$$('.twitter.button').first();
-  facebookSocialDesktop: ExtendedElementFinder = this.socialDesktop._$$('.facebook.button').first();
-  icoplaneSocialDesktop: ExtendedElementFinder = this.socialDesktop._$$('.button.ico-plane').first();
-  icocodeSocialDesktop: ExtendedElementFinder = this.socialDesktop._$$('.button.ico-code').first();
-  shareLabel: ExtendedElementFinder = this.socialDesktop._$$('.share-text-box').first();
-  howToButtonDesktop: ExtendedElementFinder = _$('#how-to-button');
+  public mainMenuBtn: ExtendedElementFinder = _$$('.main-menu-btn').first();
+  public mainMenu: ElementFinder = $$('.menu.show-menu').first();
+  public mainMenuItem: ElementFinder = this.mainMenu.$$('.menu-item.submenu').first();
+  public newChart: ExtendedElementFinder = new ExtendedElementFinder(element.all(By.cssContainingText('.menu-btn', 'New chart')).first());
+  public chartFromYourData: ExtendedElementFinder = new ExtendedElementFinder(element.all(By.cssContainingText('.menu-btn', 'Your data')).first());
+  public csvFile: ExtendedElementFinder = new ExtendedElementFinder(element.all(By.cssContainingText('.menu-btn', 'CSV file...')).first());
+  public timeGoesDown: ExtendedElementFinder = new ExtendedElementFinder(element.all(By.cssContainingText('label', 'Time goes down')).first());
+  public timeGoesRight: ExtendedElementFinder = new ExtendedElementFinder(element.all(By.cssContainingText('label', 'Time goes right')).first());
+  public upload: ElementFinder = _$$('.upload').get(1);
+  public timeValueSelect: ExtendedElementFinder = _$('select:not(:disabled)');
 
-  // mobile
-  socialMobile: ExtendedElementFinder = _$('[class="mobile"]');
-  mailButtonMobile: ExtendedElementFinder = this.socialMobile._$$('.mail.button').first();
-  twitterSocialMobile: ExtendedElementFinder = this.socialMobile._$$('.twitter.button').first();
-  facebookSocialMobile: ExtendedElementFinder = this.socialMobile._$$('.facebook.button').first();
-  icoplaneSocialMobile: ExtendedElementFinder = this.socialMobile._$$('.button.ico-plane').first();
-  icocodeSocialMobile: ExtendedElementFinder = this.socialMobile._$$('.button.ico-code').first();
-  howToButtonMobile: ExtendedElementFinder = this.socialMobile._$$('#how-to-button').first();
+  public async uploadCsv(absolutePath: string, importFileName: string): Promise<void> {
+    const timeOptions = ['day', 'month', 'year', 'week', 'quarter'];
+    let timeValue;
 
-  howToModal: ExtendedElementFinder = _$('.how-to-modal');
-  chartSwitcherBtn: ExtendedElementFinder = _$('.chart-switcher');
+    if (importFileName.match('timeformat')) {
+      timeValue = importFileName.replace('.csv', '').split('-')
+        .filter(el => timeOptions.indexOf(el) > -1)[0];
+    }
 
-  /**
-   * language switcher
-   */
-  languageSwitcherBtn: ExtendedElementFinder = _$('.lang-wrapper');
-  currentLanguage: ExtendedElementFinder = _$('.lang-current');
-  englishLanguage: ExtendedElementFinder = _$$('app-language-switcher .selected li').first();
-  rtlLanguage: ExtendedElementFinder = _$$('app-language-switcher .selected li').get(1);
-  vimeoIframe: ExtendedElementFinder = this.howToModal._$$('iframe').first();
+    await this.mainMenuBtn.safeClick();
+    await this.newChart.safeClick();
+    await this.chartFromYourData.safeClick();
+    await this.csvFile.safeClick();
 
-  async switchToChart(chartUrl: string) {
-    await this.chartSwitcherBtn.safeClick();
-    await _$(`.chart-switcher-options [href='/tools/${chartUrl}']`).safeClick();
-    await waitForUrlToChange();
+    importFileName.match(/^timeright/) ? await this.timeGoesRight.safeClick() : await this.timeGoesDown.safeClick();
 
-    return await waitForPageLoaded();
-  }
+    await this.timeValueSelect.safeClick();
 
-  changeLanguageToRtl(): Promise<void> {
-    return this.changeLanguage(true);
-  }
+    if (timeValue) {
+      await _$$(`option[value*="${timeValue}"]`).first().safeClick();
+    } else {
+      await _$$(`option[value*="year"]`).first().click();
+      await _$$(`option[value*="year"]`).first().click();
+    }
 
-  changeLanguageToEng(): Promise<void> {
-    return this.changeLanguage();
-  }
-
-  async changeLanguage(rtl?: boolean): Promise<void> {
-    let language: ExtendedElementFinder;
-    rtl ? language = this.rtlLanguage : language = this.englishLanguage;
-
-    await this.languageSwitcherBtn.safeClick();
-    await language.safeClick();
-    await waitForUrlToChange();
+    await this.upload.sendKeys(absolutePath);
+    await _$$('.ok-btn').first().safeClick();
     await waitForSpinner();
-  }
-
-  async openHowToUsePopup() {
-    await this.howToButtonDesktop.safeClick();
-    await waitUntil(this.howToModal);
   }
 }

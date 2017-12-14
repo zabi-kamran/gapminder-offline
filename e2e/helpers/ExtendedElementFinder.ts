@@ -1,34 +1,37 @@
-import { $, $$, browser, by, element, ElementArrayFinder, ElementFinder, ExpectedConditions as EC } from 'protractor';
+import {
+  $, $$, browser, by, By, element, ElementArrayFinder, ElementFinder,
+  ExpectedConditions as EC
+} from 'protractor';
 import { promise } from 'selenium-webdriver';
 
 const TIMEOUT = 15000;
 
 export class ExtendedElementFinder extends ElementFinder {
-  private errorMessage = `element ${this.locator().value} not visible`;
+  private errorMessage: string = `element ${this.locator().value} not visible`;
 
-  constructor(elementFinder: ElementFinder) {
+  public constructor(elementFinder: ElementFinder) {
     super(elementFinder.browser_, elementFinder.elementArrayFinder_);
   }
 
-  safeClick(): promise.Promise<void> {
+  public safeClick(): promise.Promise<void> {
     return browser.wait(EC.elementToBeClickable(this), TIMEOUT, this.errorMessage).then(() => {
       return this.click();
     });
   }
 
-  safeClear(): promise.Promise<void> {
+  public safeClear(): promise.Promise<void> {
     return browser.wait(EC.visibilityOf(this), TIMEOUT, this.errorMessage).then(() => {
       return this.clear();
     });
   }
 
-  safeSendKeys(text: string): promise.Promise<void> {
+  public safeSendKeys(text: string): promise.Promise<void> {
     return browser.wait(EC.visibilityOf(this), TIMEOUT, this.errorMessage).then(() => {
       return this.sendKeys(text);
     });
   }
 
-  typeText(text: string): promise.Promise<void> {
+  public typeText(text: string): promise.Promise<void> {
     return browser.wait(EC.presenceOf(this), TIMEOUT).then(() => {
       return browser.wait(EC.elementToBeClickable(this), TIMEOUT, this.errorMessage)
         .then(() => {
@@ -39,36 +42,40 @@ export class ExtendedElementFinder extends ElementFinder {
     });
   }
 
-  hover(): promise.Promise<void> {
+  public hover(): promise.Promise<void> {
     return browser.wait(EC.visibilityOf(this), TIMEOUT, this.errorMessage).then(() => {
       return browser.actions().mouseMove(this).perform();
     });
   }
 
-  safeGetAttribute(attr: string): promise.Promise<string> {
+  public safeGetAttribute(attr: string): promise.Promise<string> {
     return browser.wait(EC.visibilityOf(this), TIMEOUT, this.errorMessage).then(() => {
       return this.getAttribute(attr);
     });
   }
 
-  safeGetCssValue(val: string): promise.Promise<string> {
+  public safeGetCssValue(val: string): promise.Promise<string> {
     return browser.wait(EC.visibilityOf(this), TIMEOUT, this.errorMessage).then(() => {
       return this.getCssValue(val);
     });
   }
 
-  safeGetText(): promise.Promise<string> {
+  public safeGetText(): promise.Promise<string> {
     return browser.wait(EC.visibilityOf(this), TIMEOUT, this.errorMessage).then(() => {
       return this.getText();
     });
   }
 
-  _$$(cssSelector: string) {
+  public ByCssContainingText(selector: string, text: string): ExtendedElementFinder {
+    return new ExtendedElementFinder(element(By.cssContainingText(selector, text)));
+  }
+
+  public _$$(cssSelector: string) {
     return new ExtendedArrayFinder(this.$$(cssSelector));
   }
 
   // TODO think about this, because for now it looks weird
-  dragAndDrop(to: any): promise.Promise<void> {
+  public dragAndDrop(to: any): promise.Promise<void> {
     return browser.wait(EC.visibilityOf($(this.locator().value)), TIMEOUT, this.errorMessage).then(() => {
       return browser.actions().dragAndDrop(this, to).perform();
     });
@@ -77,23 +84,23 @@ export class ExtendedElementFinder extends ElementFinder {
 
 
 export class ExtendedArrayFinder extends ElementArrayFinder {
-  constructor(elementArrayFinder: ElementArrayFinder) {
+  public constructor(elementArrayFinder: ElementArrayFinder) {
     super(elementArrayFinder.browser_, elementArrayFinder.getWebElements, elementArrayFinder.locator(), elementArrayFinder.actionResults_);
   }
 
-  get(index: number): ExtendedElementFinder {
+  public get(index: number): ExtendedElementFinder {
     return new ExtendedElementFinder(super.get(index));
   }
 
-  first(): ExtendedElementFinder {
+  public first(): ExtendedElementFinder {
     return new ExtendedElementFinder(super.first());
   }
 
-  last(): ExtendedElementFinder {
+  public last(): ExtendedElementFinder {
     return new ExtendedElementFinder(super.last());
   }
 
-  findElementByExactText(searchText: string): ExtendedElementFinder {
+  public findElementByExactText(searchText: string): ExtendedElementFinder {
     return new ExtendedElementFinder(element.all(by.cssContainingText(this.first().locator().value, searchText))
       .filter(element => {
         return element.getText()
@@ -103,13 +110,13 @@ export class ExtendedArrayFinder extends ElementArrayFinder {
       }).first());
   }
 
-  safeGetAttribute(attr: string): promise.Promise<string> {
+  public safeGetAttribute(attr: string): promise.Promise<string> {
     return browser.wait(EC.visibilityOf(this.first()), TIMEOUT, this.errorMessage).then(() => {
       return this.getAttribute(attr);
     });
   }
 
-  safeGetText(): promise.Promise<string> {
+  public safeGetText(): promise.Promise<string> {
     return browser.wait(EC.visibilityOf(this.first()), TIMEOUT, this.errorMessage).then(() => {
       return this.getText();
     });
