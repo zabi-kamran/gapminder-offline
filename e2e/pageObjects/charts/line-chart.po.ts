@@ -1,14 +1,13 @@
 import { $, $$, ElementArrayFinder, ElementFinder } from 'protractor';
 
 import { CommonChartPage } from './common-chart.po';
-import { findElementByExactText, waitForSliderToBeReady, waitForSpinner } from '../helpers/helper';
-import { Slider } from './components/slider.e2e-component';
-import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../helpers/ExtendedElementFinder';
-import { waitUntil } from '../helpers/waitHelper';
+import { findElementByExactText, waitForSliderToBeReady, waitForSpinner } from '../../helpers/helper';
+import { Slider } from '../components/slider.e2e-component';
+import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../../helpers/ExtendedElementFinder';
+import { waitUntil } from '../../helpers/waitHelper';
 
 export class LineChart extends CommonChartPage {
   type = 'lineChart';
-  url = 'chart-type=linechart';
   chartLink: ExtendedElementFinder = _$('[src*="linechart"]');
 
   dataDoubtsLink: ExtendedElementFinder = _$('.vzb-data-warning');
@@ -60,24 +59,19 @@ export class LineChart extends CommonChartPage {
     await new Slider().waitForSliderToBeReady();
   }
 
-  async refreshPage(): Promise<void> {
-    await super.refreshPage();
-    await waitUntil(this.countriesLines.first());
-  }
-
   getSelectedCountries() {
     return this.selectedCountries;
   }
 
   async selectLine(country: string): Promise<void> {
     await waitUntil(this.selectedCountries.first());
-    await new ExtendedArrayFinder(this.selectedCountries).findElementByExactText(country).safeClick();
+    await new ExtendedArrayFinder(this.selectedCountries).findElementByText(country).safeClick();
   }
 
   async getLineOpacity(country: string): Promise<number> {
     await waitUntil(this.selectedCountries.first());
 
-    return Number(await this.selectedCountries.findElementByExactText(country).safeGetCssValue('opacity'));
+    return Number(await this.selectedCountries.findElementByText(country).safeGetCssValue('opacity'));
   }
 
   async countHighlightedLines(): Promise<number> {
@@ -95,7 +89,7 @@ export class LineChart extends CommonChartPage {
   async hoverLine(country: string): Promise<void> {
     await waitUntil(this.selectedCountries.first());
     await this.selectedCountries
-      .findElementByExactText(country)
+      .findElementByText(country)
       .hover();
   }
 
@@ -110,8 +104,7 @@ export class LineChart extends CommonChartPage {
   }
 
   async getLineLabelColor(country: string) {
-    return await findElementByExactText(this.selectedCountries, country)
-      .getCssValue('fill');
+    return await this.selectedCountries.findElementByText(country).safeGetCssValue('fill');
   }
 
   getLineColor(country: string) {

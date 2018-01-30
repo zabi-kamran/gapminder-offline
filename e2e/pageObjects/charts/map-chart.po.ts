@@ -1,11 +1,10 @@
 import { $, $$, ElementArrayFinder, ElementFinder, browser, ExpectedConditions as EC } from 'protractor';
 
 import { CommonChartPage } from './common-chart.po';
-import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../helpers/ExtendedElementFinder';
-import { waitUntil } from '../helpers/waitHelper';
+import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../../helpers/ExtendedElementFinder';
+import { waitUntil } from '../../helpers/waitHelper';
 
 export class MapChart extends CommonChartPage {
-  url = 'chart-type=map';
   chartLink: ExtendedElementFinder = _$('[src*="bubblemap"]');
 
   selectedCountries: ExtendedArrayFinder = _$$('[class*="vzb-bmc-entity label"]');

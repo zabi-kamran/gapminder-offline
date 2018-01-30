@@ -1,6 +1,6 @@
 import { $, browser, ElementFinder, ExpectedConditions as EC } from 'protractor';
 
-import { CommonChartPage } from '../common-chart.po';
+import { CommonChartPage } from '../charts/common-chart.po';
 import { _$, ExtendedElementFinder } from '../../helpers/ExtendedElementFinder';
 import { safeDragAndDrop } from '../../helpers/helper';
 
@@ -23,12 +23,14 @@ export class Slider {
 
   async dragToMiddle(): Promise<void> {
     await this.waitForSliderToBeReady();
-    await safeDragAndDrop(this.sliderButton, {x: -400, y: 0});
+    
+    let distance: number;
+    return await safeDragAndDrop(this.sliderButton, {x: -600, y: 0});
   }
 
   async dragToStart(): Promise<void> {
     await this.waitForSliderToBeReady();
-    await safeDragAndDrop(this.sliderButton, CommonChartPage.buttonPlay);
+    return await safeDragAndDrop(this.sliderButton, CommonChartPage.buttonPlay);
   }
 
   async dragToRightEdge(): Promise<void> {

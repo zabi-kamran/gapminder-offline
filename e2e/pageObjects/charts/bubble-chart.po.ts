@@ -1,11 +1,10 @@
 import { $, $$, browser, ElementArrayFinder, ElementFinder, ExpectedConditions as EC } from 'protractor';
 
 import { CommonChartPage } from './common-chart.po';
-import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../helpers/ExtendedElementFinder';
-import { waitUntil } from '../helpers/waitHelper';
+import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../../helpers/ExtendedElementFinder';
+import { waitUntil } from '../../helpers/waitHelper';
 
 export class BubbleChart extends CommonChartPage {
-  url = 'chart-type=bubbles';
   chartLink: ExtendedElementFinder = _$$('[src*="bubblechart"]').last();
 
   public dataDoubtsLink: ExtendedElementFinder = _$('.vzb-data-warning');

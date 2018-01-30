@@ -1,8 +1,9 @@
 import { safeDragAndDrop } from './helpers/helper';
-import { BubbleChart } from './pages/bubble-chart.po';
-import { Sidebar } from './pages/components/sidebar.e2e-component';
-import { CommonChartPage } from './pages/common-chart.po';
+import { BubbleChart } from './pageObjects/charts/bubble-chart.po';
+import { Sidebar } from './pageObjects/sidebar/sidebar.e2e-component';
+import { CommonChartPage } from './pageObjects/charts/common-chart.po';
 import { _$, _$$ } from './helpers/ExtendedElementFinder';
+import { browser } from 'protractor';
 
 const bubbleChart: BubbleChart = new BubbleChart();
 const sidebar: Sidebar = new Sidebar(bubbleChart);
@@ -17,8 +18,8 @@ describe('Sidebar: Select', () => {
     await commonChartPage.closeTab();
   });
 
-  it('Hover country in the country list highlight it', async() => {
-    await sidebar.hoverCountryFromList('Australia');
+  it('Hover country in the country list highlight it', async () => {
+    await sidebar.findSelect.hoverCountryFromList('Australia');
 
     expect(await bubbleChart.countBubblesByOpacity(CommonChartPage.opacity.highlighted)).toEqual(1);
     expect(await bubbleChart.bubbleLabelOnMouseHover.safeGetText()).toEqual('Australia');

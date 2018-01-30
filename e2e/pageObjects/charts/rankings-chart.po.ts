@@ -1,11 +1,10 @@
 import { $, $$, ElementArrayFinder } from 'protractor';
 
 import { CommonChartPage } from './common-chart.po';
-import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../helpers/ExtendedElementFinder';
+import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../../helpers/ExtendedElementFinder';
 import { promise } from 'selenium-webdriver';
 
 export class RankingsChart extends CommonChartPage {
-  url = 'chart-type=barrank';
   chartLink: ExtendedElementFinder = _$('[src*="barrankchart"]');
 
   dataDoubtsLink: ExtendedElementFinder = _$('.vzb-data-warning');

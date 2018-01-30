@@ -1,9 +1,10 @@
 import { $, $$, browser, ElementArrayFinder, ElementFinder, ExpectedConditions as EC } from 'protractor';
 
-import { waitForPageLoaded, waitForSliderToBeReady, waitForSpinner } from '../helpers/helper';
-import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../helpers/ExtendedElementFinder';
+import { waitForPageLoaded, waitForSliderToBeReady, waitForSpinner } from '../../helpers/helper';
+import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../../helpers/ExtendedElementFinder';
 import { promise } from 'selenium-webdriver';
-import { waitStaleness, waitUntil } from '../helpers/waitHelper';
+import { waitStaleness, waitUntil } from '../../helpers/waitHelper';
+import { protractor } from 'protractor/built/ptor';
 
 export class CommonChartPage {
   static countries = {
@@ -43,13 +44,17 @@ export class CommonChartPage {
   yAxisBtn: ExtendedElementFinder = _$('.vzb-bc-axis-y-title');
   xAxisBtn: ExtendedElementFinder = _$('.vzb-bc-axis-x-title');
 
-  url: string;
   chartLink: ExtendedElementFinder;
   selectedCountries: ExtendedArrayFinder;
 
   public axisYMaxValue: ExtendedElementFinder = _$$('.vzb-bc-axis-y g[class="tick"] text').last();
   public axisXMaxValue: ExtendedElementFinder = _$$('.vzb-bc-axis-x g[class="tick"] text').last();
   asixDropdownOptions: ExtendedArrayFinder = _$$('.vzb-treemenu-list-item-label');
+
+  // tabs
+  tabs: ExtendedArrayFinder = _$$('.nav-item');
+  addTabBtn: ExtendedElementFinder = _$('.add-tab');
+  closeTabBtn: ExtendedArrayFinder = _$$('.glyphicon-remove-circle');
 
   async waitForToolsPageCompletelyLoaded(): Promise<{}> {
     await waitUntil(CommonChartPage.sideBar);
@@ -62,15 +67,6 @@ export class CommonChartPage {
   async openChart(): Promise<void> {
     await this.chartLink.safeClick();
     await waitForSpinner();
-  }
-
-  async openByClick(): Promise<void> {
-    await this.openChart();
-  }
-
-  async refreshPage(): Promise<void> {
-    await browser.refresh();
-    await waitForPageLoaded();
   }
 
   getSelectedCountriesNames(): promise.Promise<string> {
@@ -108,9 +104,24 @@ export class CommonChartPage {
     return newOptionValue;
   }
 
+  async addTab(): Promise<void> {
+    await waitStaleness($('.modal-backdrop.fade'));
+    await this.addTabBtn.safeClick();
+  }
+
   async closeTab(): Promise<void> {
     await waitStaleness($('.modal-backdrop.fade'));
-    await _$$('.glyphicon-remove-circle').last().safeClick();
+    await this.closeTabBtn.last().safeClick();
+  }
+
+  async renameTab(newName: string): Promise<void> {
+    await this.tabs.last().safeClick();
+    await _$('.editTabInput').typeText(newName);
+    await browser.actions().sendKeys(protractor.Key.ENTER).perform();
+  }
+
+  async getTabName(tab: ExtendedElementFinder): Promise<string> {
+    return await tab._$('.doNotEditTabInput').safeGetText();
   }
 
 }

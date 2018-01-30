@@ -1,12 +1,11 @@
 import { $, $$, ElementArrayFinder, ElementFinder, browser, ExpectedConditions as EC } from 'protractor';
 
-import { findElementByExactText, waitForSpinner } from '../helpers/helper';
+import { findElementByExactText, waitForSpinner } from '../../helpers/helper';
 import { CommonChartPage } from './common-chart.po';
-import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../helpers/ExtendedElementFinder';
-import { waitUntil } from '../helpers/waitHelper';
+import { _$, _$$, ExtendedArrayFinder, ExtendedElementFinder } from '../../helpers/ExtendedElementFinder';
+import { waitUntil } from '../../helpers/waitHelper';
 
 export class MountainChart extends CommonChartPage {
-  url = 'chart-type=mountain';
   chartLink: ExtendedElementFinder = _$('[src*="mountainchart"]');
 
 

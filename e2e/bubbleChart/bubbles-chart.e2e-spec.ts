@@ -1,7 +1,8 @@
-import { safeExpectIsDispayed } from './helpers/helper';
-import { CommonChartPage } from './pages/common-chart.po';
-import { BubbleChart } from './pages/bubble-chart.po';
-import { Slider } from './pages/components/slider.e2e-component';
+import { safeDragAndDrop, safeExpectIsDispayed, waitForSpinner, disableAnimations } from '../helpers/helper';
+import { CommonChartPage } from '../pageObjects/charts/common-chart.po';
+import { BubbleChart } from '../pageObjects/charts/bubble-chart.po';
+import { Slider } from '../pageObjects/components/slider.e2e-component';
+import { browser } from 'protractor';
 
 const commonChartPage: CommonChartPage = new CommonChartPage();
 const bubbleChart: BubbleChart = new BubbleChart();
@@ -76,7 +77,7 @@ describe('Bubbles chart', () => {
     /**
      * should check that label "United States" can be dragged and dropped anywhere in the chart area(TC09)
      */
-    await bubbleChart.clickOnUnitedStates();
+    await bubbleChart.clickOnCountryBubble('India');
 
     const initialLabelPosition = await bubbleChart.countrySelectedBiggerLabel.getAttribute('transform');
 
@@ -113,38 +114,35 @@ describe('Bubbles chart', () => {
     expect(await bubbleChart.countryTooltip('India').isPresent()).toBe(false, 'tooltip should be hidden');
   });
 
-  it('Trialsegments are left for bubbles on play', async () => {
+  it('trialsegments are left for bubbles on play', async () => {
     /**
      * should check that when select China and the United States bubbles and click on play,
      * the trails being left for those two countries(TC13)
      */
-    await bubbleChart.clickOnChina();
     await bubbleChart.clickOnUnitedStates();
 
     await slider.playTimesliderSeconds(5);
 
-    expect(await bubbleChart.chinaTrails.count()).toBeGreaterThan(20);
     expect(await bubbleChart.usaTrails.count()).toBeGreaterThan(20);
 
     await slider.playTimesliderSeconds(5);
 
-    expect(await bubbleChart.chinaTrails.count()).toBeGreaterThan(50);
     expect(await bubbleChart.usaTrails.count()).toBeGreaterThan(50);
+
+    await browser.sleep(1000); // TODO remove this after fixing https://github.com/Gapminder/ng2-tools-page/issues/175
   });
 
-  it(`Trialsegments are left for bubbles on drag'n'drop`, async () => {
+  it(`trialsegments are left for bubbles on drag'n'drop`, async () => {
     /**
      * should check that when select China and the United States bubbles and and drag the timeslider,
      * the trails being left for those two countries(TC14)
      */
-    await bubbleChart.clickOnChina();
-    await bubbleChart.clickOnUnitedStates();
+    await bubbleChart.clickOnCountryBubble('India');
 
     await slider.dragToMiddle();
     await slider.dragToRightEdge();
 
-    expect(await bubbleChart.chinaTrails.count()).toBeGreaterThan(100);
-    expect(await bubbleChart.usaTrails.count()).toBeGreaterThan(100);
+    expect(await bubbleChart.indiaTrails.count()).toBeGreaterThan(100);
   });
 
   it('restore default charts settigns', async () => {

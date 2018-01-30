@@ -1,6 +1,6 @@
 import { browser, by, element, ElementArrayFinder, ElementFinder, ExpectedConditions as EC } from 'protractor';
 
-import { CommonChartPage } from '../pages/common-chart.po';
+import { CommonChartPage } from '../pageObjects/charts/common-chart.po';
 
 const MAX_TIMEOUT = 30000;
 const TIMEOUT = 15000;
@@ -14,7 +14,7 @@ export function waitForPageLoaded() {
 
 export function waitForSpinner() {
   // return browser.wait(EC.visibilityOf(CommonChartPage.spinner), 3000, 'spinner to be visible').then(() => {
-  return browser.wait(EC.stalenessOf(CommonChartPage.spinner), TIMEOUT, 'stalenessOf of spinner');
+  return browser.wait(EC.stalenessOf(CommonChartPage.spinner), MAX_TIMEOUT, 'stalenessOf of spinner');
   // });
 }
 
@@ -41,37 +41,6 @@ export function findElementByExactText(cssSelector: ElementFinder | ElementArray
 
 export function waitForSliderToBeReady() {
   return browser.wait(EC.visibilityOf(CommonChartPage.sliderReady), MAX_TIMEOUT);
-}
-
-export async function waitForUrlToChange() {
-  const currentUrl = await browser.getCurrentUrl();
-
-  return browser.wait(() => {
-    return browser.getCurrentUrl().then(url => {
-      return url !== currentUrl;
-    });
-  }, MAX_TIMEOUT, 'URL not changed');
-}
-
-export function isCountryAddedInUrl(country: string, state = true): Function {
-  /**
-   * if state = true use it to wait for presence string in url
-   * otherwise, use to wait for string to be removed from URL
-   */
-
-  if (state) {
-    return () => {
-      return browser.getCurrentUrl().then(url => {
-        return url.includes(`=${CommonChartPage.countries[country]}`);
-      });
-    };
-  } else {
-    return () => {
-      return browser.getCurrentUrl().then(url => {
-        return !url.includes(`=${CommonChartPage.countries[country]}`);
-      });
-    };
-  }
 }
 
 export function disableAnimations() {

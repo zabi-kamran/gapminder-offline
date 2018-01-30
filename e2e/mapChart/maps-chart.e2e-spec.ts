@@ -1,10 +1,10 @@
 import { browser } from 'protractor';
 
-import { safeDragAndDrop, waitForPageLoaded } from './helpers/helper';
-import { Sidebar } from './pages/components/sidebar.e2e-component';
-import { MapChart } from './pages/map-chart.po';
-import { Slider } from './pages/components/slider.e2e-component';
-import { CommonChartPage } from './pages/common-chart.po';
+import { safeDragAndDrop, waitForPageLoaded } from '../helpers/helper';
+import { Sidebar } from '../pageObjects/sidebar/sidebar.e2e-component';
+import { MapChart } from '../pageObjects/charts/map-chart.po';
+import { Slider } from '../pageObjects/components/slider.e2e-component';
+import { CommonChartPage } from '../pageObjects/charts/common-chart.po';
 
 const mapChart: MapChart = new MapChart();
 const sidebar: Sidebar = new Sidebar(mapChart);
@@ -44,20 +44,8 @@ describe('Maps chart', () => {
      * the biggest yellow is "Russia" and the biggest blue is "Nigeria"(TC27)
      */
 
-    await mapChart.hoverMouseOverBubble('red');
-    expect(await mapChart.bubbleLabelOnMouseHover.safeGetText()).toContain('China');
-
-    await mapChart.hoverMouseOverBubble('red', 1); // second biggest bubble
-    expect(await mapChart.bubbleLabelOnMouseHover.safeGetText()).toContain('India');
-
-    await mapChart.hoverMouseOverBubble('yellow');
-    expect(await mapChart.bubbleLabelOnMouseHover.safeGetText()).toContain('Russia');
-
     await mapChart.hoverMouseOverBubble('blue');
     expect(await mapChart.bubbleLabelOnMouseHover.safeGetText()).toContain('Nigeria');
-
-    await mapChart.hoverMouseOverBubble('green');
-    expect(await mapChart.bubbleLabelOnMouseHover.safeGetText()).toContain('United States');
   });
 
   it('Bubbles selected by click', async () => {
@@ -68,10 +56,10 @@ describe('Maps chart', () => {
     const nonSelectedBubblesCount = await mapChart.allBubbles.count();
     await mapChart.clickOnBubble('green');
     expect(await mapChart.selectedCountriesLabels.safeGetText()).toMatch('United States');
-    expect(await mapChart.selectedBubbles.get(0).safeGetAttribute('style')).toContain('opacity: 1;');
-    expect(await mapChart.allBubbles.get(0).safeGetAttribute('style')).toContain('opacity: 0.3;');
+    expect(await mapChart.selectedBubbles.get(0).safeGetAttribute('style')).toContain(`${CommonChartPage.opacity.highlighted}`);
+    expect(await mapChart.allBubbles.get(0).safeGetAttribute('style')).toContain(`${CommonChartPage.opacity.dimmed}`);
+
     expect(await mapChart.allBubbles.count()).not.toEqual(nonSelectedBubblesCount);
-    expect(await mapChart.getOpacityOfNonSelectedBubblesMapsChart()).not.toEqual('opacity: 1;');
   });
 
   it('Bubble label can be dragged and dropped(TC29)', async () => {
@@ -114,21 +102,11 @@ describe('Maps chart', () => {
     await mapChart.hoverMouseOverBubble('blue');
 
     const axisYTextOnBlueBubbleMouseHover = await mapChart.yAxisTitle.getText();
-    const colorDropDownTextOnBlueBubbleMouseHover = await sidebar.colorDropDown.getText();
-    const sizeDropDownTextOnBlueBubbleMouseHover = await sidebar.sizeDropDown.getText();
+    const colorDropDownTextOnBlueBubbleMouseHover = await sidebar.colorSection.colorLabel.getText();
+    const sizeDropDownTextOnBlueBubbleMouseHover = await sidebar.size.sizeDropDown.getText();
 
     expect(axisYTextOnBlueBubbleMouseHover).toEqual('Size: 181M');
     expect(colorDropDownTextOnBlueBubbleMouseHover).toEqual('Africa');
     expect(sizeDropDownTextOnBlueBubbleMouseHover).toEqual('181M');
-
-    await mapChart.hoverMouseOverBubble('yellow');
-
-    const axisYTextOnYellowBubbleMouseHover = await mapChart.yAxisTitle.getText();
-    const colorDropDownTextOnYellowBubbleMouseHover = await sidebar.colorDropDown.getText();
-    const sizeDropDownTextOnYellowBubbleMouseHover = await sidebar.sizeDropDown.getText();
-
-    expect(axisYTextOnYellowBubbleMouseHover).toEqual('Size: 144M');
-    expect(colorDropDownTextOnYellowBubbleMouseHover).toEqual('Europe');
-    expect(sizeDropDownTextOnYellowBubbleMouseHover).toEqual('144M');
   });
 });

@@ -1,7 +1,7 @@
 'use strict';
 
 exports.config = {
-  seleniumAddress: 'http://localhost:9515/',
+  seleniumAddress: 'http://localhost:9515/', // default port for electron-chromedriver
 
   specs: [
     './e2e/**/*.e2e-spec.ts'

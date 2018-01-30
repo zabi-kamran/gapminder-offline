@@ -1,7 +1,7 @@
-import { Slider } from './pages/components/slider.e2e-component';
+import { Slider } from './pageObjects/components/slider.e2e-component';
 import { browser } from 'protractor';
-import { BubbleChart } from './pages/bubble-chart.po';
-import { CommonChartPage } from './pages/common-chart.po';
+import { CommonChartPage } from './pageObjects/charts/common-chart.po';
+import { BubbleChart } from './pageObjects/charts/bubble-chart.po';
 
 describe('Slider', () => {
   const slider: Slider = new Slider();

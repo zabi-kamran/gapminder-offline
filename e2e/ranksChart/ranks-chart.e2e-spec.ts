@@ -1,10 +1,10 @@
 import { browser } from 'protractor';
 
-import { safeExpectIsDispayed, waitForSpinner } from './helpers/helper';
-import { Sidebar } from './pages/components/sidebar.e2e-component';
-import { CommonChartPage } from './pages/common-chart.po';
-import { Slider } from './pages/components/slider.e2e-component';
-import { RankingsChart } from './pages/rankings-chart.po';
+import { Sidebar } from '../pageObjects/sidebar/sidebar.e2e-component';
+import { CommonChartPage } from '../pageObjects/charts/common-chart.po';
+import { Slider } from '../pageObjects/components/slider.e2e-component';
+import { RankingsChart } from '../pageObjects/charts/rankings-chart.po';
+import { safeExpectIsDispayed, waitForSpinner } from '../helpers/helper';
 
 const ranksChart: RankingsChart = new RankingsChart();
 const sidebar: Sidebar = new Sidebar(ranksChart);
@@ -34,9 +34,9 @@ describe('Ranks chart', () => {
     expect(await ranksChart.countHighlightedBars()).toEqual(2);
   });
 
-  it('Hover the legend colors - will highlight specific bars', async() => {
+  it('Hover the legend colors - will highlight specific bars', async () => {
     await ranksChart.selectBar('China');
-    await sidebar.hoverMinimapRegion('Asia');
+    await sidebar.colorSection.hoverMinimapRegion('Asia');
 
     await ranksChart.getAllBarsWithColor('red').each(element => {
       element.getCssValue('opacity').then(opacity => {
@@ -47,19 +47,19 @@ describe('Ranks chart', () => {
     expect(await ranksChart.countHighlightedBars()).toEqual(await ranksChart.getAllBarsWithColor('red').count());
   });
 
-  it(`Hover the legend colors - won't dim selected bars`, async() => {
+  it(`Hover the legend colors - won't dim selected bars`, async () => {
     await ranksChart.selectBar('USA');
-    await sidebar.hoverMinimapRegion('Asia');
+    await sidebar.colorSection.hoverMinimapRegion('Asia');
 
     expect(await ranksChart.getBarOpacity('China')).toEqual(CommonChartPage.opacity.highlighted);
     expect(await ranksChart.getBarOpacity('USA')).toEqual(CommonChartPage.opacity.highlighted);
   });
 
-  it(`Hover a bar change Color section (legend color and dropdown label)`, async() => {
+  it(`Hover a bar change Color section (legend color and dropdown label)`, async () => {
     await ranksChart.hoverBar('China');
 
-    expect(await sidebar.colorDropDown.getText()).toEqual('Asia');
-    expect(Number(await sidebar.minimapAsiaRegion.getCssValue('opacity'))).toEqual(CommonChartPage.opacity.highlighted);
+    expect(await sidebar.colorSection.colorLabel.getText()).toEqual('Asia');
+    expect(Number(await sidebar.colorSection.minimapAsiaRegion.getCssValue('opacity'))).toEqual(CommonChartPage.opacity.highlighted);
   });
 
   it('Data doubts button', async() => {

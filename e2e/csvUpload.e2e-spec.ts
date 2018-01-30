@@ -1,7 +1,8 @@
-import { CommonChartPage } from './pages/common-chart.po';
-import { Header } from './pages/components/header.e2e-component';
+import { $, $$, browser, ExpectedConditions as EC } from 'protractor';
 import * as fs from 'fs';
-import { $, $$ } from 'protractor';
+
+import { CommonChartPage } from './pageObjects/charts/common-chart.po';
+import { Header } from './pageObjects/components/header.e2e-component';
 import { disableAnimations } from './helpers/helper';
 
 const header: Header = new Header();
@@ -26,6 +27,7 @@ describe('Upload CSV: ', () => {
       const absolutePath = fs.realpathSync(positiveFilePath + fileToUpload);
 
       await header.uploadCsv(absolutePath, fileToUpload);
+      await browser.wait(EC.visibilityOf(CommonChartPage.mainChart), 20000)
 
       await expect($$('.vzb-bc-entity').first().isDisplayed()).toBeTruthy();
     });
