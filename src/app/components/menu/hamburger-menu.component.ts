@@ -17,7 +17,13 @@ export class HamburgerMenuComponent {
     this.chartService = chartService;
   }
 
-  execute(methodName: string) {
+  execute(methodName: string, ...params) {
+    if (params && params.length > 0) {
+      const methodWithParams = `${methodName}@${JSON.stringify(params)}`;
+      this.onMenuItemSelected.emit(methodWithParams);
+      return;
+    }
+
     this.onMenuItemSelected.emit(methodName);
   }
 

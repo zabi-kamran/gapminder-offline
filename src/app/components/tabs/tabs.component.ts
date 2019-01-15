@@ -33,7 +33,7 @@ export class TabsComponent implements OnInit {
   tabDataDescriptor: TabDataDescriptor = {};
 
   constructor(
-    private chartService: ChartService,
+    public chartService: ChartService,
     private messageService: MessageService,
     private freshenerService: FreshenerService,
     private es: ElectronService,

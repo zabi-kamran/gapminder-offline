@@ -19,6 +19,7 @@ export class ChartService {
   isDevMode = false;
   ddfFolderDescriptor: DdfFolderDescriptor;
   currentTab: TabModel;
+  currentLanguage = 'en';
 
   private readonly readersDefinitions;
   private registeredReaders = ['csv', 'csv-time_in_columns'];
@@ -185,5 +186,11 @@ export class ChartService {
     }
 
     return {error, lastModified};
+  }
+
+  getLanguagePrefix() {
+    const [languagePrefix] = this.currentLanguage.split('-');
+
+    return languagePrefix;
   }
 }

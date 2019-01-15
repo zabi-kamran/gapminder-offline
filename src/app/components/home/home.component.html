@@ -38,7 +38,7 @@
           <button type="button" class="close" (click)="versionsModal.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">Check for updates</h4>
+          <h4 class="modal-title">{{'Check for updates' | translate}}</h4>
         </div>
         <div class="modal-body">
           <app-versions-form (done)="versionsFormComplete($event)"></app-versions-form>
@@ -61,7 +61,7 @@
           <button type="button" class="close" (click)="validationModal.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">DDF tools</h4>
+          <h4 class="modal-title">{{'DDF tools' | translate}}</h4>
         </div>
         <div class="modal-body">
           <app-validation-form (done)="validationFormComplete()"></app-validation-form>
@@ -83,7 +83,7 @@
           <button type="button" class="close" (click)="ddfDatasetConfigModal.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">New chart from your data</h4>
+          <h4 class="modal-title">{{'New chart from your data' | translate}}</h4>
         </div>
         <div class="modal-body">
           <app-ddf-dataset-config-form></app-ddf-dataset-config-form>
@@ -94,6 +94,7 @@
 
   <div bsModal
        #csvConfigModal="bs-modal"
+       (onShown)="modalHandler('chartDataConfigModalShown')"
        class="modal fade"
        tabindex="-1"
        role="dialog"
@@ -105,7 +106,7 @@
           <button type="button" class="close" (click)="csvConfigModal.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">New chart from your data</h4>
+          <h4 class="modal-title">{{'New chart from your data' | translate}}</h4>
         </div>
         <div class="modal-body">
           <app-file-select-config-form [currentTab]="getCurrentTab()" (done)="completeFileConfigForm($event)"></app-file-select-config-form>
@@ -116,6 +117,7 @@
 
   <div bsModal
        #excelConfigModal="bs-modal"
+       (onShown)="modalHandler('chartDataConfigModalShown')"
        class="modal fade"
        tabindex="-1"
        role="dialog"
@@ -127,7 +129,7 @@
           <button type="button" class="close" (click)="excelConfigModal.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">New chart from your data</h4>
+          <h4 class="modal-title">{{'New chart from your data' | translate}}</h4>
         </div>
         <div class="modal-body">
           <app-file-select-config-form [format]="'excel'" [currentTab]="getCurrentTab()" (done)="completeFileConfigForm($event)"></app-file-select-config-form>
@@ -137,7 +139,7 @@
   </div>
 
   <div bsModal
-       (onShown)="onAdditionalCsvConfigModalShown()"
+       (onShown)="onAdditionalCsvConfigModalShown(); modalHandler('chartDataConfigModalShown')"
        #additionalCsvConfigModal="bs-modal"
        class="modal fade"
        tabindex="-1"
@@ -150,7 +152,7 @@
           <button type="button" class="close" (click)="additionalCsvConfigModal.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">Add data to the active chart</h4>
+          <h4 class="modal-title">{{'Add data to the active chart' | translate}}</h4>
         </div>
         <div class="modal-body">
           <app-file-select-config-form [addDataMode]="true" [currentTab]="getCurrentTab()" (done)="additionalFileConfigFormComplete($event)"></app-file-select-config-form>
@@ -160,7 +162,7 @@
   </div>
 
   <div bsModal
-       (onShown)="onAdditionalCsvConfigModalShown()"
+       (onShown)="onAdditionalCsvConfigModalShown(); modalHandler('chartDataConfigModalShown')"
        #additionalExcelConfigModal="bs-modal"
        class="modal fade"
        tabindex="-1"
@@ -173,7 +175,7 @@
           <button type="button" class="close" (click)="additionalExcelConfigModal.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">Add data to the active chart</h4>
+          <h4 class="modal-title">{{'Add data to the active chart' | translate}}</h4>
         </div>
         <div class="modal-body">
           <app-file-select-config-form [format]="'excel'" [addDataMode]="true" [currentTab]="getCurrentTab()" (done)="additionalFileConfigFormComplete($event)"></app-file-select-config-form>

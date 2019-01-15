@@ -8,6 +8,7 @@ import {
   ViewContainerRef,
   ChangeDetectorRef
 } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
 import { ModalDirective } from 'ngx-bootstrap';
 import { ChartService } from '../tabs/chart.service';
@@ -51,6 +52,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     public chartService: ChartService,
+    public translate: TranslateService,
     private viewContainerRef: ViewContainerRef,
     private messageService: MessageService,
     private freshenerService: FreshenerService,
@@ -60,6 +62,13 @@ export class HomeComponent implements OnInit {
     this.menuActions = getMenuActions(this, es);
 
     initMenuComponent(this, es);
+
+    translate.onDefaultLangChange.subscribe(() => {
+      setTimeout(() => {
+        initMenuComponent(this, es);
+        this.doDetectChanges();
+      });
+    });
   }
 
   ngOnInit() {
@@ -125,8 +134,22 @@ export class HomeComponent implements OnInit {
     this.dataItemsAvailability();
   }
 
-  onMenuItemSelected(methodName: string) {
-    this.menuActions[methodName]();
+  onMenuItemSelected(method: string) {
+    if (method.indexOf('@') > 0) {
+      const [methodName, paramsStr] = method.split('@');
+
+      try {
+        const params = JSON.parse(paramsStr);
+
+        this.menuActions[methodName](params);
+      } catch (e) {
+        this.menuActions[methodName]();
+      }
+
+      return;
+    }
+
+    this.menuActions[method]();
   }
 
   dataItemsAvailability() {
@@ -329,5 +352,9 @@ export class HomeComponent implements OnInit {
 
   onTabReady() {
     this.messageService.sendMessage(TAB_READY_ACTION);
+  }
+
+  modalHandler(eventDesc) {
+    this.messageService.sendMessage(eventDesc);
   }
 }

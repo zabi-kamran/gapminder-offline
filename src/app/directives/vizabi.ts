@@ -199,6 +199,8 @@ export class VizabiDirective implements OnDestroy, OnChanges {
 
       this.ms.lock();
 
+      fullModel.locale.id = this.language;
+
       this.viz = this.es.vizabi(this.chartType, this.placeholder, fullModel);
 
       this.onCreated.emit({
