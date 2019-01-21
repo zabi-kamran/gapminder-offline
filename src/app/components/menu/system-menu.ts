@@ -1,6 +1,7 @@
 import { HomeComponent } from '../home/home.component';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 import { ElectronService } from '../../providers/electron.service';
+import { langConfigTemplate } from '../../../lang-config';
 
 export const initMenuComponent = (appComponent: HomeComponent, es: ElectronService) => {
   const templateMenu: MenuItemConstructorOptions[] = [
@@ -110,16 +111,7 @@ export const initMenuComponent = (appComponent: HomeComponent, es: ElectronServi
     },
     {
       label: appComponent.translate.instant('Languages'),
-      submenu: [
-        {
-          label: 'English',
-          click: () => appComponent.menuActions.setLanguage(['en'])
-        },
-        {
-          label: 'Русский',
-          click: () => appComponent.menuActions.setLanguage(['ru-RU'])
-        }
-      ]
+      submenu: []
     },
     {
       label: appComponent.translate.instant('View'),
@@ -198,6 +190,11 @@ export const initMenuComponent = (appComponent: HomeComponent, es: ElectronServi
     }
   ];
   const Menu = es.remote.Menu;
+
+  templateMenu[2].submenu = langConfigTemplate.map(langDescriptor => ({
+    label: langDescriptor.label,
+    click: () => appComponent.menuActions.setLanguage([langDescriptor.id])
+  }));
 
   appComponent.menuComponent = Menu.buildFromTemplate(templateMenu);
   Menu.setApplicationMenu(appComponent.menuComponent);

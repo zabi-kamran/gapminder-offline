@@ -11,9 +11,7 @@ export class HamburgerMenuComponent {
   @Input() tabsModel: TabModel[];
   @Output() onMenuItemSelected: EventEmitter<any> = new EventEmitter();
 
-  private chartService: ChartService;
-
-  constructor(chartService: ChartService) {
+  constructor(public chartService: ChartService) {
     this.chartService = chartService;
   }
 

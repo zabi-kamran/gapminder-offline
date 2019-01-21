@@ -24,8 +24,10 @@
               (onChartClicked)="appMainClickHandler($event)"
               style="height: 100%"></app-tabs>
     <div class="footer">
-      <span>English</span>
-      <a href="#" (click)="setLanguage('ru-RU')">Russian</a>
+      <span *ngFor="let lang of chartService.langConfig">
+          <span *ngIf="lang.id === this.chartService.currentLanguage">{{lang.label}}</span>
+          <span *ngIf="lang.id !== this.chartService.currentLanguage"><a href="#" (click)="setLanguage(lang.id)">{{lang.label}}</a></span>
+      </span>
     </div>
   </div>
 

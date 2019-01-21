@@ -5,6 +5,7 @@ import { TabDataDescriptor } from '../descriptors/tab-data.descriptor';
 import { MessageService } from '../../message.service';
 import { MODEL_CHANGED } from '../../constants';
 import { ElectronService } from '../../providers/electron.service';
+import { langConfigTemplate } from '../../../lang-config';
 
 const configSg = {
   BarRankChart: require('../../../../node_modules/vizabi-config-systema_globalis/dist/BarRankChart.json'),
@@ -20,6 +21,7 @@ export class ChartService {
   ddfFolderDescriptor: DdfFolderDescriptor;
   currentTab: TabModel;
   currentLanguage = 'en';
+  langConfig = langConfigTemplate;
 
   private readonly readersDefinitions;
   private registeredReaders = ['csv', 'csv-time_in_columns'];

@@ -94,11 +94,8 @@
     <li class="menu-item submenu">
     <button type="button" class="menu-btn"><span class="menu-text">{{'Languages' | translate}}</span></button>
     <ul class="menu">
-      <li class="menu-item" (click)="execute('setLanguage', 'en')">
-        <button type="button" class="menu-btn"><span class="menu-text">English</span></button>
-      </li>
-      <li class="menu-item" (click)="execute('setLanguage', 'ru-RU')">
-        <button type="button" class="menu-btn"><span class="menu-text">Русский</span></button>
+      <li *ngFor="let lang of chartService.langConfig" class="menu-item" (click)="execute('setLanguage', lang.id)">
+        <button type="button" class="menu-btn"><span class="menu-text">{{lang.label}}</span></button>
       </li>
     </ul>
   </li>
