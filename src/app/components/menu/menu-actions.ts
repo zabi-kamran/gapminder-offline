@@ -139,6 +139,6 @@ export const getMenuActions = (context: HomeComponent, es: ElectronService) => (
     }
 
     context.chartService.currentLanguage = langPar[0];
-    context.translate.setDefaultLang(context.chartService.getLanguagePrefix());
+    context.translate.setDefaultLang(context.chartService.currentLanguage);
   }
 });

@@ -17,6 +17,6 @@ export class AppComponent {
     }
 
     translate.addLangs(['en', 'ru']);
-    translate.setDefaultLang(chartService.getLanguagePrefix());
+    translate.setDefaultLang(chartService.currentLanguage);
   }
 }

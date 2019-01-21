@@ -357,4 +357,9 @@ export class HomeComponent implements OnInit {
   modalHandler(eventDesc) {
     this.messageService.sendMessage(eventDesc);
   }
+
+  setLanguage(lang: string) {
+    this.chartService.currentLanguage = lang;
+    this.translate.setDefaultLang(this.chartService.currentLanguage);
+  }
 }

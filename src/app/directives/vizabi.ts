@@ -276,6 +276,7 @@ export class VizabiDirective implements OnDestroy, OnChanges {
 
   private createPlaceholder() {
     this.placeholder = document.createElement('div');
+    this.placeholder.className = 'vzb-placeholder';
     this.placeholder.style.width = '100%';
     this.placeholder.style.height = '100%';
     this.element.nativeElement.appendChild(this.placeholder);

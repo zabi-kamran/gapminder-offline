@@ -187,10 +187,4 @@ export class ChartService {
 
     return {error, lastModified};
   }
-
-  getLanguagePrefix() {
-    const [languagePrefix] = this.currentLanguage.split('-');
-
-    return languagePrefix;
-  }
 }

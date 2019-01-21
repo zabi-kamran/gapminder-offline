@@ -22,7 +22,11 @@
               (onTabSetActive)="doDetectChanges()"
               (onChartCreated)="onChartCreated()"
               (onChartClicked)="appMainClickHandler($event)"
-              style="height: 100%;"></app-tabs>
+              style="height: 100%"></app-tabs>
+    <div class="footer">
+      <span>English</span>
+      <a href="#" (click)="setLanguage('ru-RU')">Russian</a>
+    </div>
   </div>
 
   <div bsModal

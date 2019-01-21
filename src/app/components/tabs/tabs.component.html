@@ -1,4 +1,4 @@
-<app-tabs-new [syncActions]="getSyncActions()" [disabled]="disabled" style = "height: 100%;">
+<app-tabs-new [syncActions]="getSyncActions()" [disabled]="disabled" class="vizabi-content">
     <app-tab-new *ngFor = "let tab of tabsModel"
                 [title] = "tab.title"
                 [active] = "tab.active"
@@ -6,7 +6,7 @@
                 (select) = "selectTab(tab)"
                 (deselect) = "deselectTab(tab)"
                 (remove) = "removeTab($event)"
-                style = "height: 100%;">
+                class="vizabi-content">
         <div *ngIf = "!tab.chartType">
             <div class = "tab-chart-choice">{{'Choose Chart Type' | translate}}</div>
             <ul class = "tab-chart-list">
@@ -27,7 +27,7 @@
                 </li>
             </ul>
         </div>
-        <div *ngIf = "tab.chartType" style = "height: 100%">
+        <div *ngIf = "tab.chartType" class="vizabi-content">
             <div *ngFor="let alert of tab.alerts">
                 <alert type="danger">
                     {{ 'An error has occurred during chart processing.' | translate}}
@@ -42,7 +42,7 @@
             <app-tab-freshener *ngIf="tab.isDataExpired" [tab]="tab"></app-tab-freshener>
 
             <vizabi *ngIf="tab.alerts.length <= 0"
-                    style = "height: 100%;"
+                    class="vizabi-content"
                     (onCreated) = "chartCreated($event, tab)"
                     (onChanged) = "chartChanged($event, tab)"
                     (onReadyOnce)="ready($event, tab)"
