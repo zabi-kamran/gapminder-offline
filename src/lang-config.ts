@@ -1,7 +1,8 @@
 export const langConfigTemplate = [
   {
     id: 'en',
-    label: 'English'
+    label: 'English',
+    default: true
   },
   {
     id: 'ru-RU',

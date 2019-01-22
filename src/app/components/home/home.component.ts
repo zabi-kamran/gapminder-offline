@@ -60,61 +60,68 @@ export class HomeComponent implements OnInit {
     private es: ElectronService
   ) {
     this.menuActions = getMenuActions(this, es);
-
-    initMenuComponent(this, es);
-
-    translate.onDefaultLangChange.subscribe(() => {
-      setTimeout(() => {
-        initMenuComponent(this, es);
-        this.doDetectChanges();
-      });
-    });
   }
 
   ngOnInit() {
-    this.messageService.getMessage()
-      .subscribe((event: any) => {
-        if (event.message === OPEN_DDF_FOLDER_ACTION) {
-          this.ddfDatasetConfigModal.hide();
+    initMenuComponent(this, this.es);
+    this.dataItemsAvailability();
+    this.restoreCurrentLanguage();
 
-          if (event.options && event.options.selectedFolder && event.options.chartType) {
-            const firstFilePath = event.options.selectedFolder;
+    this.translate.onDefaultLangChange.subscribe((langEvent: { lang: string }) => {
+      this.settingsOperation(settings => {
+        settings.language = langEvent.lang;
+        this.es.writeSettings(settings);
 
-            if (firstFilePath) {
-              const tabDataDescriptor: TabDataDescriptor = {};
+      });
 
-              this.chartService.ddfFolderDescriptor.ddfUrl = firstFilePath;
-              this.chartService.setReaderDefaults(tabDataDescriptor);
+      setTimeout(() => {
+        initMenuComponent(this, this.es);
+        this.doDetectChanges();
+      });
+    });
 
-              const newTab = new TabModel(event.options.chartType, false);
-              const chartIssue = this.chartService.newChart(newTab, tabDataDescriptor, false);
+    this.messageService.getMessage().subscribe((event: any) => {
+      if (event.message === OPEN_DDF_FOLDER_ACTION) {
+        this.ddfDatasetConfigModal.hide();
 
-              this.tabsModel.forEach((tab: TabModel) => tab.active = false);
+        if (event.options && event.options.selectedFolder && event.options.chartType) {
+          const firstFilePath = event.options.selectedFolder;
 
-              newTab.active = true;
+          if (firstFilePath) {
+            const tabDataDescriptor: TabDataDescriptor = {};
 
-              this.tabsModel.push(newTab);
+            this.chartService.ddfFolderDescriptor.ddfUrl = firstFilePath;
+            this.chartService.setReaderDefaults(tabDataDescriptor);
 
-              if (chartIssue) {
-                this.es.remote.dialog.showErrorBox('Error',
-                  `Could not open DDF folder ${this.chartService.ddfFolderDescriptor.ddfUrl}, because ${chartIssue}`);
-              }
+            const newTab = new TabModel(event.options.chartType, false);
+            const chartIssue = this.chartService.newChart(newTab, tabDataDescriptor, false);
 
-              this.es.ipcRenderer.send('new-chart', this.getCurrentTab().chartType + ' by DDF folder');
-              this.doDetectChanges();
+            this.tabsModel.forEach((tab: TabModel) => tab.active = false);
+
+            newTab.active = true;
+
+            this.tabsModel.push(newTab);
+
+            if (chartIssue) {
+              this.es.remote.dialog.showErrorBox('Error',
+                `Could not open DDF folder ${this.chartService.ddfFolderDescriptor.ddfUrl}, because ${chartIssue}`);
             }
+
+            this.es.ipcRenderer.send('new-chart', this.getCurrentTab().chartType + ' by DDF folder');
+            this.doDetectChanges();
           }
         }
+      }
 
-        if (event.message === SWITCH_MENU_ACTION) {
-          this.switchMenu();
-        }
+      if (event.message === SWITCH_MENU_ACTION) {
+        this.switchMenu();
+      }
 
-        if (event.message === MODEL_CHANGED) {
-          this.dataItemsAvailability();
-          this.doDetectChanges();
-        }
-      });
+      if (event.message === MODEL_CHANGED) {
+        this.dataItemsAvailability();
+        this.doDetectChanges();
+      }
+    });
 
     this.es.ipcRenderer.on('do-open-completed', (event: any, parameters: any) => {
       this.doOpenCompleted(event, parameters);
@@ -130,8 +137,6 @@ export class HomeComponent implements OnInit {
         this.doDetectChanges();
       }
     });
-
-    this.dataItemsAvailability();
   }
 
   onMenuItemSelected(method: string) {
@@ -361,5 +366,27 @@ export class HomeComponent implements OnInit {
   setLanguage(lang: string) {
     this.chartService.currentLanguage = lang;
     this.translate.setDefaultLang(this.chartService.currentLanguage);
+  }
+
+  restoreCurrentLanguage() {
+    this.settingsOperation(settings => {
+      if (settings.language && !this.es.isLanguageValid(settings.language)) {
+        alert(`Wrong or unsupported language ${settings.language}! Please correct or remove "${this.es.SETTINGS_FILE}"`);
+      }
+
+      if (!settings.language || !this.es.isLanguageValid(settings.language)) {
+        settings.language = this.es.getDefaultLanguage();
+      }
+
+      this.setLanguage(settings.language);
+    });
+  }
+
+  settingsOperation(whatShouldIDo: Function) {
+    try {
+      whatShouldIDo(this.es.readSettings());
+    } catch (e) {
+      alert(`Error in settings! Please correct or remove "${this.es.SETTINGS_FILE}"`);
+    }
   }
 }

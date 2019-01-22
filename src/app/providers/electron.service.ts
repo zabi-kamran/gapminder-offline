@@ -10,6 +10,7 @@ import * as ddfCsvReader from 'vizabi-ddfcsv-reader';
 import * as excelReader from 'vizabi-excel-reader';
 import * as csvReader from 'vizabi-csv-reader';
 import * as ddfValidation from 'ddf-validation';
+import { langConfigTemplate } from '../../lang-config';
 
 @Injectable()
 export class ElectronService {
@@ -27,9 +28,9 @@ export class ElectronService {
   CsvReader: typeof csvReader;
   ddfValidation: typeof ddfValidation;
   vizabi: any;
+  SETTINGS_FILE: string;
 
   constructor() {
-    // Conditional imports
     if (this.isElectron()) {
       this.ipcRenderer = window.require('electron').ipcRenderer;
       this.webFrame = window.require('electron').webFrame;
@@ -45,7 +46,44 @@ export class ElectronService {
       this.CsvReader = window.require('vizabi-csv-reader');
       this.ddfValidation = window.require('ddf-validation');
       this.vizabi = (window as any).Vizabi;
+      this.SETTINGS_FILE = this.path.resolve('settings.json');
     }
+  }
+
+  readSettings() {
+    if (!this.fs.existsSync(this.SETTINGS_FILE)) {
+      return {};
+    }
+
+    return JSON.parse(this.fs.readFileSync(this.SETTINGS_FILE, 'utf8'));
+  }
+
+  writeSettings(settings) {
+    try {
+      this.fs.writeFileSync(this.SETTINGS_FILE, JSON.stringify(settings), 'utf8');
+    } catch (e) {
+      alert('Can not write settings!');
+    }
+  }
+
+  isLanguageValid(lang: string): boolean {
+    for (const currentLang of langConfigTemplate) {
+      if (currentLang.id === lang) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  getDefaultLanguage(): string {
+    for (const currentLang of langConfigTemplate) {
+      if (currentLang.default) {
+        return currentLang.id;
+      }
+    }
+
+    throw new Error('Default language is missing');
   }
 
   isElectron() {

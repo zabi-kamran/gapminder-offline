@@ -7,7 +7,7 @@
                 (deselect) = "deselectTab(tab)"
                 (remove) = "removeTab($event)"
                 class="vizabi-content">
-        <div *ngIf = "!tab.chartType">
+        <div *ngIf = "!tab.chartType" class="vizabi-content">
             <div class = "tab-chart-choice">{{'Choose Chart Type' | translate}}</div>
             <ul class = "tab-chart-list">
                 <li (click) = "selectChart('BubbleChart')">
